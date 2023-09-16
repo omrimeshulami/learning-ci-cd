@@ -3,7 +3,7 @@ name: CI
 on: [pull_request]
 
 jobs:
-  run-tests:
+  tests:
     name: Run Tests
     runs-on: ubuntu-latest
 
@@ -21,3 +21,22 @@ jobs:
 
       - name: Run Tests
         run: yarn test
+
+  deploy-to-docker:
+    needs: tests # This ensures it only runs after the 'tests' job completes successfully
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Echo Docker Hub Username
+        run: echo "${{ secrets.DOCKER_HUB_USERNAME }}"
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/learning-ci-cd:latest .
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/learning-ci-cd:latest
