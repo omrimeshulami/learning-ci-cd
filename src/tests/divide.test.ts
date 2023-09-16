@@ -9,7 +9,7 @@ const BASE = 100;
 describe("Divide function", () => {
   it("divide positive numbers", () => {
     const result = divideFunction(BASE, POSITIVE_NUMBERS);
-    expect(result).toEqual(51);
+    expect(result).toEqual(5);
   });
 
   it("divide negative numbers", () => {
